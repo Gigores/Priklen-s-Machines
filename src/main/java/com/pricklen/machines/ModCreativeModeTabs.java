@@ -24,6 +24,9 @@ public class ModCreativeModeTabs {
 
                         pOutput.accept(ModItems.FIRECLAY_BRICK.get());
                         pOutput.accept(ModBlocks.FIRECLAY_BRICKS.get());
+                        pOutput.accept(ModBlocks.FIRECLAY_BRICK_STAIRS.get());
+                        pOutput.accept(ModBlocks.FIRECLAY_BRICK_WALL.get());
+                        pOutput.accept(ModBlocks.FIRECLAY_BRICK_SLAB.get());
                     })
                     .build()
     );

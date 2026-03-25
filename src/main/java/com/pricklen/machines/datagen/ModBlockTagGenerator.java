@@ -19,12 +19,31 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
         this.tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(ModBlocks.FIRECLAY_BRICKS.get());
+                .add(
+                        ModBlocks.FIRECLAY_BRICKS.get(),
+                        ModBlocks.FIRECLAY_BRICK_SLAB.get(),
+                        ModBlocks.FIRECLAY_BRICK_STAIRS.get(),
+                        ModBlocks.FIRECLAY_BRICK_WALL.get()
+                );
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.FIRECLAY_BRICKS.get());
+                .add(
+                        ModBlocks.FIRECLAY_BRICKS.get(),
+                        ModBlocks.FIRECLAY_BRICK_SLAB.get(),
+                        ModBlocks.FIRECLAY_BRICK_STAIRS.get(),
+                        ModBlocks.FIRECLAY_BRICK_WALL.get()
+                );
 
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.FIRECLAY_BLOCK.get());
+
+        this.tag(BlockTags.WALLS)
+                .add(ModBlocks.FIRECLAY_BRICK_WALL.get());
+
+        this.tag(BlockTags.SLABS)
+                .add(ModBlocks.FIRECLAY_BRICK_SLAB.get());
+
+        this.tag(BlockTags.STAIRS)
+                .add(ModBlocks.FIRECLAY_BRICK_STAIRS.get());
     }
 }

@@ -29,6 +29,8 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     @Override
     protected void generate() {
         this.dropSelf(ModBlocks.FIRECLAY_BRICKS.get());
+        this.dropSelf(ModBlocks.FIRECLAY_BRICK_WALL.get());
+        this.dropSelf(ModBlocks.FIRECLAY_BRICK_STAIRS.get());
 
         this.add(ModBlocks.FIRECLAY_BLOCK.get(), block ->
                 LootTable.lootTable()
@@ -38,6 +40,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
                         )
         );
+        this.add(ModBlocks.FIRECLAY_BRICK_SLAB.get(), block -> createSlabItemTable(ModBlocks.FIRECLAY_BRICK_SLAB.get()));
     }
 
     @Override

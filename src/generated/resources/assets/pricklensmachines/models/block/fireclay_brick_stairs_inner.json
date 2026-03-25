@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "pricklensmachines:block/fireclay_bricks",
+    "side": "pricklensmachines:block/fireclay_bricks",
+    "top": "pricklensmachines:block/fireclay_bricks"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pricklensmachines:block/fireclay_brick_slab"
+    },
+    "type=double": {
+      "model": "pricklensmachines:block/fireclay_bricks"
+    },
+    "type=top": {
+      "model": "pricklensmachines:block/fireclay_brick_slab_top"
+    }
+  }
+}

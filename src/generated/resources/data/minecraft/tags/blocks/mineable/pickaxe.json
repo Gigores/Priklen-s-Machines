@@ -1,5 +1,8 @@
 {
   "values": [
-    "pricklensmachines:fireclay_bricks"
+    "pricklensmachines:fireclay_bricks",
+    "pricklensmachines:fireclay_brick_slab",
+    "pricklensmachines:fireclay_brick_stairs",
+    "pricklensmachines:fireclay_brick_wall"
   ]
 }

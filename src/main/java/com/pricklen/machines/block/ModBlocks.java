@@ -20,15 +20,15 @@ public class ModBlocks {
     public static final RegistryObject<Block> FIRECLAY_BRICKS = registerBlock("fireclay_bricks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
     );
-//    public static final RegistryObject<Block> FIRECLAY_BRICK_STAIRS = registerBlock("fireclay_brick_stairs",
-//            () -> new StairBlock(() -> ModBlocks.FIRECLAY_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
-//    );
-//    public static final RegistryObject<Block> FIRECLAY_BRICK_SLAB = registerBlock("fireclay_brick_slab",
-//            () -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
-//    );
-//    public static final RegistryObject<Block> FIRECLAY_BRICK_WALL = registerBlock("fireclay_brick_wall",
-//            () -> new WallBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
-//    );
+    public static final RegistryObject<Block> FIRECLAY_BRICK_STAIRS = registerBlock("fireclay_brick_stairs",
+            () -> new StairBlock(() -> ModBlocks.FIRECLAY_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
+    );
+    public static final RegistryObject<Block> FIRECLAY_BRICK_SLAB = registerBlock("fireclay_brick_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
+    );
+    public static final RegistryObject<Block> FIRECLAY_BRICK_WALL = registerBlock("fireclay_brick_wall",
+            () -> new WallBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
+    );
     public static final RegistryObject<Block> FIRECLAY_BLOCK = registerBlock("fireclay_block",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.CLAY))
     );
