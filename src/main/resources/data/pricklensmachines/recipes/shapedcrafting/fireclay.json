@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SC",
+    "CS"
+  ],
+  "key": {
+    "S": { "item": "minecraft:sand" },
+    "C": { "item": "minecraft:clay_ball" }
+  },
+  "result": {
+    "item": "pricklensmachines:fireclay",
+    "count": 4
+  }
+}

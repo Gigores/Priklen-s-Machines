@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BB",
+    "BB"
+  ],
+  "key": {
+    "B": { "item": "pricklensmachines:fireclay" }
+  },
+  "result": {
+    "item": "pricklensmachines:fireclay_block"
+  }
+}
