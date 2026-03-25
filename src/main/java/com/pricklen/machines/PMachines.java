@@ -46,7 +46,7 @@ public class PMachines {
         modEventBus.addListener(this::commonSetup);
 
 //        // Register the Deferred Register to the mod event bus so blocks get registered
-//        BLOCKS.register(modEventBus);
+        ModBlocks.register(modEventBus);
 //        // Register the Deferred Register to the mod event bus so items get registered
         ModItems.register(modEventBus);
 //        // Register the Deferred Register to the mod event bus so tabs get registered
