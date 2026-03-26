@@ -32,6 +32,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         this.dropSelf(ModBlocks.FIRECLAY_BRICK_WALL.get());
         this.dropSelf(ModBlocks.FIRECLAY_BRICK_STAIRS.get());
         this.dropSelf(ModBlocks.KILN.get());
+        this.dropSelf(ModBlocks.KILN_HATCH.get());
 
         this.add(ModBlocks.FIRECLAY_BLOCK.get(), block ->
                 LootTable.lootTable()

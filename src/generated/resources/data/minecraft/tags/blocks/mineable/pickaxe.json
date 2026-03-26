@@ -4,6 +4,7 @@
     "pricklensmachines:fireclay_brick_slab",
     "pricklensmachines:fireclay_brick_stairs",
     "pricklensmachines:fireclay_brick_wall",
-    "pricklensmachines:kiln_controller"
+    "pricklensmachines:kiln_controller",
+    "pricklensmachines:kiln_hatch"
   ]
 }

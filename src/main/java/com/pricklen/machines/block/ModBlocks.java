@@ -35,6 +35,9 @@ public class ModBlocks {
     public static final RegistryObject<Block> KILN = registerBlock("kiln_controller",
             () -> new KilnControllerBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
     );
+    public static final RegistryObject<Block> KILN_HATCH = registerBlock("kiln_hatch",
+            () -> new KilnHatchBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
+    );
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);

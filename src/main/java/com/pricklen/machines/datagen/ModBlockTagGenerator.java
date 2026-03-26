@@ -24,7 +24,8 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                         ModBlocks.FIRECLAY_BRICK_SLAB.get(),
                         ModBlocks.FIRECLAY_BRICK_STAIRS.get(),
                         ModBlocks.FIRECLAY_BRICK_WALL.get(),
-                        ModBlocks.KILN.get()
+                        ModBlocks.KILN.get(),
+                        ModBlocks.KILN_HATCH.get()
                 );
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -33,7 +34,8 @@ public class ModBlockTagGenerator extends BlockTagsProvider {
                         ModBlocks.FIRECLAY_BRICK_SLAB.get(),
                         ModBlocks.FIRECLAY_BRICK_STAIRS.get(),
                         ModBlocks.FIRECLAY_BRICK_WALL.get(),
-                        ModBlocks.KILN.get()
+                        ModBlocks.KILN.get(),
+                        ModBlocks.KILN_HATCH.get()
                 );
 
         this.tag(BlockTags.MINEABLE_WITH_SHOVEL)

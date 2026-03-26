@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,mode=input": {
+      "model": "pricklensmachines:block/kiln_hatch_input",
+      "y": 90
+    },
+    "facing=east,mode=output": {
+      "model": "pricklensmachines:block/kiln_hatch_output",
+      "y": 90
+    },
+    "facing=north,mode=input": {
+      "model": "pricklensmachines:block/kiln_hatch_input"
+    },
+    "facing=north,mode=output": {
+      "model": "pricklensmachines:block/kiln_hatch_output"
+    },
+    "facing=south,mode=input": {
+      "model": "pricklensmachines:block/kiln_hatch_input",
+      "y": 180
+    },
+    "facing=south,mode=output": {
+      "model": "pricklensmachines:block/kiln_hatch_output",
+      "y": 180
+    },
+    "facing=west,mode=input": {
+      "model": "pricklensmachines:block/kiln_hatch_input",
+      "y": 270
+    },
+    "facing=west,mode=output": {
+      "model": "pricklensmachines:block/kiln_hatch_output",
+      "y": 270
+    }
+  }
+}

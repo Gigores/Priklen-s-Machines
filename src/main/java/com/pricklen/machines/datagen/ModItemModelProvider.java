@@ -27,6 +27,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         evenSimplerBlockItem(ModBlocks.FIRECLAY_BRICK_STAIRS);
         evenSimplerBlockItem(ModBlocks.FIRECLAY_BRICK_SLAB);
         evenSimplerBlockItem(ModBlocks.KILN);
+        evenSimplerBlockItem(ModBlocks.KILN_HATCH);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

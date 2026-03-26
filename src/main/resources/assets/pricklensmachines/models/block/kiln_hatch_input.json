@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "pricklensmachines:block/kiln_hatch_input",
+    "side": "pricklensmachines:block/fireclay_bricks",
+    "top": "pricklensmachines:block/fireclay_bricks",
+    "bottom": "pricklensmachines:block/fireclay_bricks",
+	"particle": "pricklensmachines:block/fireclay_bricks"
+  }
+}

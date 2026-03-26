@@ -18,6 +18,11 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.of(KilnControllerBlockEntity::new,
                             ModBlocks.KILN.get()).build(null));
 
+    public static final RegistryObject<BlockEntityType<KilnHatchBlockEntity>> KILN_HATCH =
+            BLOCK_ENTITIES.register("kiln_hatch_be", () ->
+                    BlockEntityType.Builder.of(KilnHatchBlockEntity::new,
+                            ModBlocks.KILN_HATCH.get()).build(null));
+
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }
