@@ -2,8 +2,12 @@ package com.pricklen.machines;
 
 import com.mojang.logging.LogUtils;
 import com.pricklen.machines.block.ModBlocks;
+import com.pricklen.machines.block.entity.ModBlockEntities;
 import com.pricklen.machines.item.ModItems;
+import com.pricklen.machines.screen.KilnScreen;
+import com.pricklen.machines.screen.ModMenuTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,6 +46,8 @@ public class PMachines {
         ModItems.register(modEventBus);
 //        // Register the Deferred Register to the mod event bus so tabs get registered
         ModCreativeModeTabs.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
+        ModMenuTypes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -87,8 +93,9 @@ public class PMachines {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+//            LOGGER.info("HELLO FROM CLIENT SETUP");
+//            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+            MenuScreens.register(ModMenuTypes.KILN_MENU.get(), KilnScreen::new);
         }
     }
 }
