@@ -2,6 +2,7 @@ package com.pricklen.machines.block.entity;
 
 import com.mojang.logging.LogUtils;
 import com.pricklen.machines.block.HatchMode;
+import com.pricklen.machines.block.KilnControllerBlock;
 import com.pricklen.machines.block.KilnHatchBlock;
 import com.pricklen.machines.block.ModBlocks;
 import com.pricklen.machines.item.ModItems;
@@ -145,12 +146,14 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         if(hasRecipe() && structure.isValid()) {
             increaseCraftingProgress();
             setChanged(pLevel, pPos, pState);
+            level.setBlock(pPos, pState.setValue(KilnControllerBlock.LIT, true), 3);
 
             if(hasProgressFinished()) {
                 craftItem();
                 resetProgress();
             }
         } else {
+            level.setBlock(pPos, pState.setValue(KilnControllerBlock.LIT, false), 3);
             resetProgress();
         }
     }
@@ -216,7 +219,7 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     }
 
     public void clientTick(Level pLevel, BlockPos pPos, BlockState pState) {
-        if(hasRecipe() && checkStructure(pPos).isValid()) {
+        if(pState.getValue(KilnControllerBlock.LIT)) {
             BlockPos smokePos = calculateRelativeBlockPos(pPos, 0, 0, 1);
             pLevel.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, smokePos.getX() + .5f, smokePos.getY() + 1, smokePos.getZ() + .5f, 0, .1, 0);
         }

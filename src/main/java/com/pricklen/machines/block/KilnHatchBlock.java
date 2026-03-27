@@ -56,7 +56,7 @@ public class KilnHatchBlock extends BaseEntityBlock {
             HatchMode mode = state.getValue(MODE);
             HatchMode newMode = (mode == HatchMode.INPUT) ? HatchMode.OUTPUT : HatchMode.INPUT;
 
-            System.out.println("Mode set to " + newMode);
+//            System.out.println("Mode set to " + newMode);
             level.setBlock(pos, state.setValue(MODE, newMode), 3);
             return InteractionResult.sidedSuccess(level.isClientSide);
         }

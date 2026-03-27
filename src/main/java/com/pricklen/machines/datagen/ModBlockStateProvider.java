@@ -2,6 +2,7 @@ package com.pricklen.machines.datagen;
 
 import com.pricklen.machines.PMachines;
 import com.pricklen.machines.block.HatchMode;
+import com.pricklen.machines.block.KilnControllerBlock;
 import com.pricklen.machines.block.KilnHatchBlock;
 import com.pricklen.machines.block.ModBlocks;
 import net.minecraft.core.Direction;
@@ -30,7 +31,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
         slabBlock(((SlabBlock) ModBlocks.FIRECLAY_BRICK_SLAB.get()), blockTexture(ModBlocks.FIRECLAY_BRICKS.get()), blockTexture(ModBlocks.FIRECLAY_BRICKS.get()));
         wallBlock(((WallBlock) ModBlocks.FIRECLAY_BRICK_WALL.get()), blockTexture(ModBlocks.FIRECLAY_BRICKS.get()));
 
-        horizontalBlock(ModBlocks.KILN.get(), new ModelFile.UncheckedModelFile(PMachines.MODID + ":block/kiln_unlit"));
+        getVariantBuilder(ModBlocks.KILN.get()).forAllStates(state -> {
+            boolean lit = state.getValue(KilnControllerBlock.LIT);
+            Direction facing = state.getValue(KilnControllerBlock.FACING);
+
+            String modelName = lit ? "kiln_lit" : "kiln_unlit";
+
+            return ConfiguredModel.builder()
+                    .modelFile(new ModelFile.UncheckedModelFile(
+                            PMachines.MODID + ":block/" + modelName))
+                    .rotationY(((int) facing.toYRot() + 180) % 360)
+                    .build();
+        });
         getVariantBuilder(ModBlocks.KILN_HATCH.get()).forAllStates(state -> {
             Direction facing = state.getValue(KilnHatchBlock.FACING);
             HatchMode mode = state.getValue(KilnHatchBlock.MODE);

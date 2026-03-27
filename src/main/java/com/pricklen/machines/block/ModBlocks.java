@@ -33,7 +33,11 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.CLAY))
     );
     public static final RegistryObject<Block> KILN = registerBlock("kiln_controller",
-            () -> new KilnControllerBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
+            () -> new KilnControllerBlock(
+                    BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS)
+                            .strength(3.5f)
+                            .lightLevel(state -> state.getValue(KilnControllerBlock.LIT) ? 13 : 0)
+            )
     );
     public static final RegistryObject<Block> KILN_HATCH = registerBlock("kiln_hatch",
             () -> new KilnHatchBlock(BlockBehaviour.Properties.copy(Blocks.STONE_BRICKS))
