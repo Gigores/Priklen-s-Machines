@@ -39,7 +39,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class KilnControllerBlockEntity extends BlockEntity implements MenuProvider {
 
@@ -163,8 +165,6 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
                 pullFromHatches(structure.inputHatches());
             if (hasOutputItem())
                 pushToHatches(structure.outputHatches());
-            if (!isBurning())
-                pullFromHatchesToFuel(structure.inputHatches());
         }
 
         if (isBurning()) {
@@ -190,33 +190,9 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         level.setBlock(pos, state.setValue(KilnControllerBlock.LIT, isBurning()), 3);
     }
     public void pullFromHatches(List<BlockPos> inputHatches) {
-        if (inputHatches.isEmpty()) return;
-        var fromBE = level.getBlockEntity(inputHatches.get(0));
-        if (fromBE == null) return;
-        LazyOptional<IItemHandler> fromCap =
-                fromBE.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-        LazyOptional<IItemHandler> toCap =
-                this.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
-
-        if (fromCap.isPresent() && toCap.isPresent()) {
-            IItemHandler from = fromCap.orElseThrow(RuntimeException::new);
-            IItemHandler to = toCap.orElseThrow(RuntimeException::new);
-
-            ItemStack extracted = from.extractItem(INPUT_SLOT, 1, true);
-            if (!extracted.isEmpty()) {
-                ItemStack remainder = ItemHandlerHelper.insertItem(to, extracted, true);
-                if (remainder.isEmpty()) {
-                    ItemStack realExtract = from.extractItem(INPUT_SLOT, 1, false);
-                    ItemHandlerHelper.insertItem(to, realExtract, false);
-                    return;
-                }
-            }
-        }
-    }
-    public void pullFromHatchesToFuel(List<BlockPos> inputHatches) {
         if (inputHatches.isEmpty() || level == null) return;
 
-        var fromBE = level.getBlockEntity(inputHatches.get(0));
+        var fromBE = getMoreItems(inputHatches);
         if (fromBE == null) return;
 
         LazyOptional<IItemHandler> fromCap =
@@ -234,27 +210,53 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
             ItemStack stack = from.getStackInSlot(i);
             if (stack.isEmpty()) continue;
 
-            if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) <= 0) {
-                continue;
-            }
+            // пробуем извлечь 1 предмет
+            ItemStack simulated = from.extractItem(i, 1, true);
+            if (simulated.isEmpty()) continue;
 
-            ItemStack simulatedExtract = from.extractItem(i, 1, true);
-
-            if (simulatedExtract.isEmpty()) continue;
-
-            ItemStack remainder = ItemHandlerHelper.insertItem(to, simulatedExtract, true);
+            ItemStack remainder = ItemHandlerHelper.insertItem(to, simulated, true);
 
             if (remainder.isEmpty()) {
-                ItemStack realExtract = from.extractItem(i, 1, false);
-                ItemHandlerHelper.insertItem(to, realExtract, false);
+                ItemStack real = from.extractItem(i, 1, false);
+                ItemHandlerHelper.insertItem(to, real, false);
                 return;
             }
         }
     }
+    private BlockEntity getMoreItems(List<BlockPos> hatches) {
+        return hatches.stream()
+                .map(level::getBlockEntity)
+                .filter(Objects::nonNull)
+                .max(Comparator.comparingInt(this::countItemsInBE))
+                .orElse(null);
+    }
+    private BlockEntity getLeastItems(List<BlockPos> hatches) {
+        return hatches.stream()
+                .map(level::getBlockEntity)
+                .filter(Objects::nonNull)
+                .min(Comparator.comparingInt(this::countItemsInBE))
+                .orElse(null);
+    }
+    private int countItemsInBE(BlockEntity be) {
+        return be.getCapability(ForgeCapabilities.ITEM_HANDLER)
+                .map(handler -> {
+                    int total = 0;
+
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        ItemStack stack = handler.getStackInSlot(i);
+                        if (!stack.isEmpty()) {
+                            total += stack.getCount();
+                        }
+                    }
+
+                    return total;
+                })
+                .orElse(0);
+    }
     public void pushToHatches(List<BlockPos> outputHatches) {
         if (outputHatches.isEmpty() || level == null) return;
 
-        BlockEntity toBE = level.getBlockEntity(outputHatches.get(0));
+        BlockEntity toBE = getLeastItems(outputHatches);
         if (toBE == null) return;
 
         LazyOptional<IItemHandler> fromCap =
@@ -300,9 +302,11 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     }
 
     public void clientTick(Level pLevel, BlockPos pPos, BlockState pState) {
-        if(pState.getValue(KilnControllerBlock.LIT)) {
+        if(pState.getValue(KilnControllerBlock.LIT) && level.getRandom().nextBoolean()) {
             BlockPos smokePos = calculateRelativeBlockPos(pPos, 0, 0, 1);
-            pLevel.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, smokePos.getX() + .5f, smokePos.getY() + 1, smokePos.getZ() + .5f, 0, .1, 0);
+            var dx = level.getRandom().nextFloat() * 0.6 - 0.3;
+            var dz = level.getRandom().nextFloat() * 0.6 - 0.3;
+            pLevel.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, smokePos.getX() + .5f + dx, smokePos.getY() + 1, smokePos.getZ() + .5f + dz, 0, .1, 0);
         }
     }
 
