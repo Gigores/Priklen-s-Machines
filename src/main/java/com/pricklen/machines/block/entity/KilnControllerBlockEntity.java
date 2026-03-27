@@ -396,17 +396,14 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         SimpleContainer inventory = new SimpleContainer(1);
         inventory.setItem(0, itemHandler.getStackInSlot(INPUT_SLOT));
 
-        // 1. ТВОЙ рецепт (высший приоритет)
         Optional<KilnRecipe> kilnRecipe = level.getRecipeManager()
                 .getRecipeFor(KilnRecipe.Type.INSTANCE, inventory, level);
         if (kilnRecipe.isPresent()) return Optional.of(kilnRecipe.get());
 
-        // 2. BLAST
         Optional<BlastingRecipe> blasting = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, inventory, level);
         if (blasting.isPresent()) return Optional.of(blasting.get());
 
-        // 3. SMELTING
         return level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMELTING, inventory, level)
                 .map(r -> (Recipe<?>) r);
@@ -418,12 +415,10 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
 
         Recipe<?> recipe = recipeOpt.get();
 
-        // ТВОЙ рецепт
         if (recipe instanceof KilnRecipe kiln) {
             return Math.max(1, kiln.getTime() / 2);
         }
 
-        // vanilla cooking
         if (recipe instanceof AbstractCookingRecipe cooking) {
             return Math.max(1, cooking.getCookingTime() / 2);
         }
