@@ -30,6 +30,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,6 +125,13 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
 
     public void serverTick(Level pLevel, BlockPos pPos, BlockState pState) {
         var structure = checkStructure(pPos);
+
+        if (structure.isValid()) {
+            if (!hasInputItem())
+                pullFromHatches(structure.inputHatches());
+            if (hasOutputItem())
+                pushToHatches(structure.outputHatches());
+        }
 //        var logger = LogUtils.getLogger();
 //
 //        logger.debug("INPUT:");
@@ -144,6 +152,66 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
             }
         } else {
             resetProgress();
+        }
+    }
+    public void pullFromHatches(List<BlockPos> inputHatches) {
+        if (inputHatches.isEmpty()) return;
+        var fromBE = level.getBlockEntity(inputHatches.get(0));
+        if (fromBE == null) return;
+        LazyOptional<IItemHandler> fromCap =
+                fromBE.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+        LazyOptional<IItemHandler> toCap =
+                this.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+
+        if (fromCap.isPresent() && toCap.isPresent()) {
+            IItemHandler from = fromCap.orElseThrow(RuntimeException::new);
+            IItemHandler to = toCap.orElseThrow(RuntimeException::new);
+
+            for (int i = 0; i < from.getSlots(); i++) {
+                ItemStack extracted = from.extractItem(i, 1, true);
+                if (!extracted.isEmpty()) {
+                    ItemStack remainder = ItemHandlerHelper.insertItem(to, extracted, true);
+                    if (remainder.isEmpty()) {
+                        ItemStack realExtract = from.extractItem(i, 1, false);
+                        ItemHandlerHelper.insertItem(to, realExtract, false);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    public void pushToHatches(List<BlockPos> outputHatches) {
+        if (outputHatches.isEmpty() || level == null) return;
+
+        BlockEntity toBE = level.getBlockEntity(outputHatches.get(0));
+        if (toBE == null) return;
+
+        LazyOptional<IItemHandler> fromCap =
+                this.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+
+        LazyOptional<IItemHandler> toCap =
+                toBE.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+
+        if (fromCap.isPresent() && toCap.isPresent()) {
+
+            IItemHandler from = fromCap.orElseThrow(RuntimeException::new);
+            IItemHandler to = toCap.orElseThrow(RuntimeException::new);
+
+            int slot = OUTPUT_SLOT;
+            if (slot >= from.getSlots()) return;
+
+            ItemStack stack = from.getStackInSlot(slot);
+            if (stack.isEmpty()) return;
+
+            ItemStack toInsert = stack.copy();
+            toInsert.setCount(1);
+            ItemStack remainder = ItemHandlerHelper.insertItem(to, toInsert, true);
+
+            if (remainder.isEmpty()) {
+
+                ItemStack extracted = from.extractItem(slot, 1, false);
+                ItemHandlerHelper.insertItem(to, extracted, false);
+            }
         }
     }
 
@@ -213,6 +281,12 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
                 this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + result.getCount()));
     }
 
+    private boolean hasInputItem() {
+        return !this.itemHandler.getStackInSlot(INPUT_SLOT).isEmpty();
+    }
+    private boolean hasOutputItem() {
+        return !this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty();
+    }
     private boolean hasRecipe() {
         boolean hasCraftingItem = this.itemHandler.getStackInSlot(INPUT_SLOT).getItem() == ModItems.FIRECLAY.get();
         ItemStack result = new ItemStack(ModItems.FIRECLAY_BRICK.get());
