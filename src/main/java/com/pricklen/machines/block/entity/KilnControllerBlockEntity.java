@@ -1,5 +1,8 @@
 package com.pricklen.machines.block.entity;
 
+import com.mojang.logging.LogUtils;
+import com.pricklen.machines.block.HatchMode;
+import com.pricklen.machines.block.KilnHatchBlock;
 import com.pricklen.machines.block.ModBlocks;
 import com.pricklen.machines.item.ModItems;
 import com.pricklen.machines.screen.KilnMenu;
@@ -17,13 +20,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -31,6 +33,9 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class KilnControllerBlockEntity extends BlockEntity implements MenuProvider {
 
@@ -118,7 +123,18 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     }
 
     public void serverTick(Level pLevel, BlockPos pPos, BlockState pState) {
-        if(hasRecipe() && hasStructure(pLevel, pPos, pState)) {
+        var structure = checkStructure(pPos);
+//        var logger = LogUtils.getLogger();
+//
+//        logger.debug("INPUT:");
+//        for (var pos : structure.inputHatches())
+//            logger.debug("    " + pos.toString());
+//
+//        logger.debug("OUTPUT:");
+//        for (var pos : structure.outputHatches())
+//            logger.debug("    " + pos.toString());
+
+        if(hasRecipe() && structure.isValid()) {
             increaseCraftingProgress();
             setChanged(pLevel, pPos, pState);
 
@@ -132,7 +148,7 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     }
 
     public void clientTick(Level pLevel, BlockPos pPos, BlockState pState) {
-        if(hasRecipe() && hasStructure(pLevel, pPos, pState)) {
+        if(hasRecipe() && checkStructure(pPos).isValid()) {
             BlockPos smokePos = calculateRelativeBlockPos(pPos, 0, 0, 1);
             pLevel.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, true, smokePos.getX() + .5f, smokePos.getY() + 1, smokePos.getZ() + .5f, 0, .1, 0);
         }
@@ -160,19 +176,30 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         };
     }
 
-    private boolean hasStructure(Level pLevel, BlockPos pos, BlockState pState) {
+    private StructureStatus checkStructure(BlockPos pos) {
+        var inputHatches = new ArrayList<BlockPos>();
+        var outputHatches = new ArrayList<BlockPos>();
         for (StructurePart part : STRUCTURE) {
             BlockPos target = calculateRelativeBlockPos(pos, part.x, part.y, part.z);
-            if (!level.getBlockState(target).is(part.block)) {
-                return false;
+            var blockState = level.getBlockState(target);
+            if (!blockState.is(part.block)) {
+                if (blockState.is(HATCH_BLOCK)) {
+                    var mode = blockState.getValue(KilnHatchBlock.MODE);
+                    switch (mode) {
+                        case INPUT -> inputHatches.add(target);
+                        case OUTPUT -> outputHatches.add(target);
+                    }
+                    continue;
+                }
+                return new StructureStatus(false, new ArrayList<>(), new ArrayList<>());
             }
         }
-        return true;
+        return new StructureStatus(true, inputHatches, outputHatches);
     }
-    private boolean check(Level level, BlockPos origin, int dx, int dy, int dz, Block expected) {
-        BlockPos checkPos = calculateRelativeBlockPos(origin, dx, dy, dz);
-        return level.getBlockState(checkPos).is(expected);
-    }
+//    private boolean check(Level level, BlockPos origin, int dx, int dy, int dz, Block expected) {
+//        BlockPos checkPos = calculateRelativeBlockPos(origin, dx, dy, dz);
+//        return level.getBlockState(checkPos).is(expected);
+//    }
 
     private void resetProgress() {
         progress = 0;
@@ -211,6 +238,7 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
 
     private record StructurePart(int x, int y, int z, Block block) {}
 
+    private static final Block HATCH_BLOCK = ModBlocks.KILN_HATCH.get();
     private static final StructurePart[] STRUCTURE = new StructurePart[] {
             /*
             ...
@@ -271,4 +299,5 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
             new StructurePart(0, 3, 0, ModBlocks.FIRECLAY_BRICKS.get()),
             new StructurePart(1, 3, 0, ModBlocks.FIRECLAY_BRICK_WALL.get()),
     };
+    private record StructureStatus(boolean isValid, List<BlockPos> inputHatches, List<BlockPos> outputHatches) {}
 }
