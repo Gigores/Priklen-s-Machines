@@ -35,9 +35,10 @@ public class KilnScreen extends AbstractContainerScreen<KilnMenu> {
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
-        if(menu.isCrafting()) {
+        if (menu.isCrafting())
             guiGraphics.blit(TEXTURE, x + 79, y + 35, 176, 14, menu.getScaledProgress(), 17);
-        }
+        if (menu.isFueling())
+            guiGraphics.blit(TEXTURE, x + 57, y + 37, 176, 0, 17, menu.getScaledFuel());
     }
 
     @Override

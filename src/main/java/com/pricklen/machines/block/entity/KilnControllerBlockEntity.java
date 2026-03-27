@@ -21,12 +21,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -43,13 +45,16 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(2);
     private static final int INPUT_SLOT = 0;
-    private static final int OUTPUT_SLOT = 1;
+    private static final int FUEL_SLOT = 1;
+    private static final int OUTPUT_SLOT = 2;
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 78;
+    private int fuel = 0;
+    private int maxFuel = 1;
 
     public KilnControllerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.KILN_CONTROLLER.get(), pPos, pBlockState);
@@ -59,7 +64,9 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
                 return switch (pIndex) {
                     case 0 -> KilnControllerBlockEntity.this.progress;
                     case 1 -> KilnControllerBlockEntity.this.maxProgress;
-                    default -> 9;
+                    case 2 -> KilnControllerBlockEntity.this.fuel;
+                    case 3 -> KilnControllerBlockEntity.this.maxFuel;
+                    default -> throw new IllegalStateException("Bad index: " + pIndex);
                 };
             }
 
@@ -68,12 +75,14 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
                 switch (pIndex) {
                     case 0 -> KilnControllerBlockEntity.this.progress = pValue;
                     case 1 -> KilnControllerBlockEntity.this.maxProgress = pValue;
+                    case 2 -> KilnControllerBlockEntity.this.fuel = pValue;
+                    case 3 -> KilnControllerBlockEntity.this.maxFuel = pValue;
                 };
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 4;
             }
         };
     }
@@ -84,6 +93,15 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
             return lazyItemHandler.cast();
         }
         return super.getCapability(cap, side);
+    }
+    private boolean isBurning() {
+        return fuel > 0;
+    }
+    private boolean hasFuelItem() {
+        return !itemHandler.getStackInSlot(FUEL_SLOT).isEmpty();
+    }
+    private int getBurnTime(ItemStack stack) {
+        return ForgeHooks.getBurnTime(stack, RecipeType.SMELTING);
     }
 
     @Override
@@ -115,6 +133,8 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     protected void saveAdditional(CompoundTag pTag) {
         pTag.put("inventory", itemHandler.serializeNBT());
         pTag.putInt("kiln_controller.progress", progress);
+        pTag.putInt("kiln_controller.fuel", fuel);
+        pTag.putInt("kiln_controller.max_fuel", maxFuel);
         super.saveAdditional(pTag);
     }
     @Override
@@ -122,10 +142,13 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         super.load(pTag);
         itemHandler.deserializeNBT(pTag.getCompound("inventory"));
         progress = pTag.getInt("kiln_controller.progress");
+        fuel = pTag.getInt("kiln_controller.fuel");
+        maxFuel = pTag.getInt("kiln_controller.max_fuel");
     }
 
-    public void serverTick(Level pLevel, BlockPos pPos, BlockState pState) {
-        var structure = checkStructure(pPos);
+    public void serverTick(Level level, BlockPos pos, BlockState state) {
+
+        var structure = checkStructure(pos);
 
         if (structure.isValid()) {
             if (!hasInputItem())
@@ -133,29 +156,27 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
             if (hasOutputItem())
                 pushToHatches(structure.outputHatches());
         }
-//        var logger = LogUtils.getLogger();
-//
-//        logger.debug("INPUT:");
-//        for (var pos : structure.inputHatches())
-//            logger.debug("    " + pos.toString());
-//
-//        logger.debug("OUTPUT:");
-//        for (var pos : structure.outputHatches())
-//            logger.debug("    " + pos.toString());
 
-        if(hasRecipe() && structure.isValid()) {
+        if (isBurning()) {
+            fuel--;
+        }
+        if (!isBurning() && hasRecipe() && hasFuelItem()) {
+            consumeFuel();
+        }
+
+        boolean canWork = hasRecipe() && structure.isValid() && isBurning();
+
+        if (canWork) {
             increaseCraftingProgress();
-            setChanged(pLevel, pPos, pState);
-            level.setBlock(pPos, pState.setValue(KilnControllerBlock.LIT, true), 3);
-
-            if(hasProgressFinished()) {
+            setChanged(level, pos, state);
+            if (hasProgressFinished()) {
                 craftItem();
                 resetProgress();
             }
         } else {
-            level.setBlock(pPos, pState.setValue(KilnControllerBlock.LIT, false), 3);
             resetProgress();
         }
+        level.setBlock(pos, state.setValue(KilnControllerBlock.LIT, isBurning()), 3);
     }
     public void pullFromHatches(List<BlockPos> inputHatches) {
         if (inputHatches.isEmpty()) return;
@@ -215,6 +236,19 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
                 ItemStack extracted = from.extractItem(slot, 1, false);
                 ItemHandlerHelper.insertItem(to, extracted, false);
             }
+        }
+    }
+    private void consumeFuel() {
+        ItemStack fuelStack = itemHandler.getStackInSlot(FUEL_SLOT);
+
+        int burnTime = getBurnTime(fuelStack);
+
+        if (burnTime > 0) {
+            fuel = burnTime;
+            maxFuel = burnTime;
+
+            fuelStack.shrink(1);
+            itemHandler.setStackInSlot(FUEL_SLOT, fuelStack);
         }
     }
 

@@ -22,7 +22,7 @@ public class KilnMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public KilnMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(4));
     }
     public KilnMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.KILN_MENU.get(), pContainerId);
@@ -34,7 +34,8 @@ public class KilnMenu extends AbstractContainerMenu {
         addPlayerInventory(inv);
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(iItemHandler -> {
             this.addSlot(new SlotItemHandler(iItemHandler, 0, 56, 17));
-            this.addSlot(new SlotItemHandler(iItemHandler, 1, 116, 35));
+            this.addSlot(new SlotItemHandler(iItemHandler, 1, 56, 53));
+            this.addSlot(new SlotItemHandler(iItemHandler, 2, 116, 35));
         });
         addDataSlots(data);
     }
@@ -69,7 +70,7 @@ public class KilnMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 2;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
@@ -110,10 +111,19 @@ public class KilnMenu extends AbstractContainerMenu {
     public boolean isCrafting() {
         return data.get(0) > 0;
     }
+    public boolean isFueling() {
+        return data.get(2) > 0;
+    }
     public int getScaledProgress() {
         int progress = this.data.get(0);
         int maxProgress = this.data.get(1);
         int progressArrowSize = 24;
+        return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+    }
+    public int getScaledFuel() {
+        int progress = this.data.get(2);
+        int maxProgress = this.data.get(3);
+        int progressArrowSize = 14;
         return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
     }
 }
