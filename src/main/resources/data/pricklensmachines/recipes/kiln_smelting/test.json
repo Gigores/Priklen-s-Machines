@@ -1,0 +1,11 @@
+{
+  "type": "pricklensmachines:kiln_smelting",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "result": {
+    "item": "minecraft:glowstone_dust"
+  }
+}

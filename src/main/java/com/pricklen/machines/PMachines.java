@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.pricklen.machines.block.ModBlocks;
 import com.pricklen.machines.block.entity.ModBlockEntities;
 import com.pricklen.machines.item.ModItems;
+import com.pricklen.machines.recipe.ModRecipes;
 import com.pricklen.machines.screen.KilnHatchScreen;
 import com.pricklen.machines.screen.KilnScreen;
 import com.pricklen.machines.screen.ModMenuTypes;
@@ -49,6 +50,7 @@ public class PMachines {
         ModCreativeModeTabs.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);

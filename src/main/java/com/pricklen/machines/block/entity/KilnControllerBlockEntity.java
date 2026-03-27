@@ -3,6 +3,7 @@ package com.pricklen.machines.block.entity;
 import com.mojang.logging.LogUtils;
 import com.pricklen.machines.block.*;
 import com.pricklen.machines.item.ModItems;
+import com.pricklen.machines.recipe.KilnRecipe;
 import com.pricklen.machines.screen.KilnMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,10 +19,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.BlastingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -367,10 +365,11 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     }
 
     private void craftItem() {
-        Optional<? extends AbstractCookingRecipe> recipe = getCurrentRecipe();
-        if (recipe.isEmpty()) return;
+        Optional<Recipe<?>> recipeOpt = getCurrentRecipe();
+        if (recipeOpt.isEmpty()) return;
 
-        ItemStack result = recipe.get().getResultItem(level.registryAccess());
+        Recipe<?> recipe = recipeOpt.get();
+        ItemStack result = recipe.getResultItem(level.registryAccess());
 
         itemHandler.extractItem(INPUT_SLOT, 1, false);
 
@@ -383,8 +382,7 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         );
     }
     private boolean hasRecipe() {
-        Optional<? extends AbstractCookingRecipe> recipe = getCurrentRecipe();
-
+        Optional<Recipe<?>> recipe = getCurrentRecipe();
         if (recipe.isEmpty()) return false;
 
         ItemStack result = recipe.get().getResultItem(level.registryAccess());
@@ -392,24 +390,45 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         return canInsertAmountIntoOutputSlot(result.getCount())
                 && canInsertItemIntoOutputSlot(result.getItem());
     }
-    private Optional<? extends AbstractCookingRecipe> getCurrentRecipe() {
+    private Optional<Recipe<?>> getCurrentRecipe() {
         if (level == null) return Optional.empty();
 
         SimpleContainer inventory = new SimpleContainer(1);
         inventory.setItem(0, itemHandler.getStackInSlot(INPUT_SLOT));
 
+        // 1. ТВОЙ рецепт (высший приоритет)
+        Optional<KilnRecipe> kilnRecipe = level.getRecipeManager()
+                .getRecipeFor(KilnRecipe.Type.INSTANCE, inventory, level);
+        if (kilnRecipe.isPresent()) return Optional.of(kilnRecipe.get());
+
+        // 2. BLAST
         Optional<BlastingRecipe> blasting = level.getRecipeManager()
                 .getRecipeFor(RecipeType.BLASTING, inventory, level);
+        if (blasting.isPresent()) return Optional.of(blasting.get());
 
-        if (blasting.isPresent()) return blasting;
-
+        // 3. SMELTING
         return level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMELTING, inventory, level);
+                .getRecipeFor(RecipeType.SMELTING, inventory, level)
+                .map(r -> (Recipe<?>) r);
     }
     private int getCookingTime() {
-        return getCurrentRecipe()
-                .map(recipe -> Math.max(1, recipe.getCookingTime() / 2))
-                .orElse(78);
+        Optional<Recipe<?>> recipeOpt = getCurrentRecipe();
+
+        if (recipeOpt.isEmpty()) return 78;
+
+        Recipe<?> recipe = recipeOpt.get();
+
+        // ТВОЙ рецепт
+        if (recipe instanceof KilnRecipe kiln) {
+            return Math.max(1, kiln.getTime() / 2);
+        }
+
+        // vanilla cooking
+        if (recipe instanceof AbstractCookingRecipe cooking) {
+            return Math.max(1, cooking.getCookingTime() / 2);
+        }
+
+        return 78;
     }
 
     private boolean hasInputItem() {
