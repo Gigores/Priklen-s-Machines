@@ -60,7 +60,7 @@ public class KilnCategory implements IRecipeCategory<KilnRecipe> {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("block.pricklensmachines.kiln");
+        return Component.translatable("jei.category.kiln");
     }
 
     @Override
