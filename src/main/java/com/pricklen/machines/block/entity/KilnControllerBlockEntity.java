@@ -173,8 +173,11 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         if (isBurning()) {
             fuel--;
         }
-        if (!isBurning() && hasRecipe() && hasFuelItem()) {
+        if (!isBurning() && hasRecipe() && hasFuelItem() && structure.isValid()) {
             consumeFuel();
+        }
+        if (isBurning() && !structure.isValid()) {
+            fuel = 0;
         }
 
         boolean valid = structure.isValid() && hasRecipe();
