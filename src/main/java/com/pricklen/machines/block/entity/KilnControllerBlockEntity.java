@@ -61,7 +61,17 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
     protected final ContainerData data;
+
+    public int getProgress() {
+        return progress;
+    }
+
     private int progress = 0;
+
+    public int getMaxProgress() {
+        return maxProgress;
+    }
+
     private int maxProgress = 78;
     private int fuel = 0;
     private int maxFuel = 1;
