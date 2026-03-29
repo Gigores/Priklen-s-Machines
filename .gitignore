@@ -120,3 +120,5 @@ runs/
 
 src/generated/resources/.cache
 run-data/logs
+
+changelog/
