@@ -1,4 +1,4 @@
-package com.pricklen.machines.compat;
+package com.pricklen.machines.compat.jei;
 
 import com.pricklen.machines.PMachines;
 import com.pricklen.machines.block.ModBlocks;
@@ -18,8 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-
-import javax.imageio.ImageTranscoder;
 
 public class KilnCategory implements IRecipeCategory<KilnRecipe> {
 

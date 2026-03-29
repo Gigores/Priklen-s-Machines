@@ -1,4 +1,4 @@
-package com.pricklen.machines.compat;
+package com.pricklen.machines.compat.jei;
 
 import com.pricklen.machines.PMachines;
 import com.pricklen.machines.block.ModBlocks;

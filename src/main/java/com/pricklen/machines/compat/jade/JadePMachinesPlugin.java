@@ -1,15 +1,10 @@
-package com.pricklen.machines.compat;
+package com.pricklen.machines.compat.jade;
 
 import com.pricklen.machines.PMachines;
 import com.pricklen.machines.block.KilnControllerBlock;
-import com.pricklen.machines.block.ModBlocks;
 import com.pricklen.machines.block.entity.KilnControllerBlockEntity;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Blocks;
-import snownee.jade.JadeClient;
 import snownee.jade.api.*;
-
-import java.util.List;
 
 @WailaPlugin
 public class JadePMachinesPlugin implements IWailaPlugin {
