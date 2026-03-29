@@ -29,7 +29,7 @@ public class KilnRecipe implements Recipe<SimpleContainer> {
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
         if (pLevel.isClientSide()) return false;
-        return inputItems.get(0).test(pContainer.getItem(0));
+        return inputItems.stream().anyMatch((i) -> i.test(pContainer.getItem(0)));
     }
 
     @Override
@@ -76,14 +76,13 @@ public class KilnRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<KilnRecipe> {
 
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation(PMachines.MODID, "kiln_smelting");
 
         @Override
         public KilnRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
             var output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pSerializedRecipe, "result"));
             var ingredients = GsonHelper.getAsJsonArray(pSerializedRecipe, "ingredients");
             var time = GsonHelper.getAsInt(pSerializedRecipe, "time");
-            var inputs = NonNullList.withSize(1, Ingredient.EMPTY);
+            var inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
             for (int i = 0; i < inputs.size(); i++)
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             return new KilnRecipe(inputs, output, pRecipeId, time);

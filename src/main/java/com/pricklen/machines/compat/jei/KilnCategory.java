@@ -52,7 +52,7 @@ public class KilnCategory implements IRecipeCategory<KilnRecipe> {
 
         this.arrow = helper.createAnimatedDrawable(
                 helper.createDrawable(TEXTURE, 176, 14, 24, 17),
-                200,
+                100,
                 IDrawableAnimated.StartDirection.LEFT,
                 false
         );
