@@ -13,6 +13,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,14 +32,20 @@ public class KilnCategory implements IRecipeCategory<KilnRecipe> {
     private final IDrawable icon;
     private final IDrawableAnimated flame;
     private final IDrawableAnimated arrow;
+    private final IGuiHelper helper;
+
+    private static final int UI_X_OFFSET = 55;
+    private static final int UI_Y_OFFSET = 16;
+    private static final int UI_WIDTH = 82;
+    private static final int UI_HEIGHT = 54;
 
     public KilnCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 52, 13, 88, 60);
+        this.background = helper.createDrawable(TEXTURE, UI_X_OFFSET, UI_Y_OFFSET, UI_WIDTH, UI_HEIGHT);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.KILN.get()));
 
         this.flame = helper.createAnimatedDrawable(
                 helper.createDrawable(TEXTURE, 176, 0, 14, 14),
-                200,
+                300,
                 IDrawableAnimated.StartDirection.TOP,
                 true
         );
@@ -49,6 +56,7 @@ public class KilnCategory implements IRecipeCategory<KilnRecipe> {
                 IDrawableAnimated.StartDirection.LEFT,
                 false
         );
+        this.helper = helper;
     }
 
     @Override
@@ -73,13 +81,23 @@ public class KilnCategory implements IRecipeCategory<KilnRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, KilnRecipe kilnRecipe, IFocusGroup iFocusGroup) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 4, 4).addIngredients(kilnRecipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 64, 22).addItemStack(kilnRecipe.getResultItem(null));
+        builder.addSlot(RecipeIngredientRole.INPUT, 1, 1).addIngredients(kilnRecipe.getIngredients().get(0));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 61, 19).addItemStack(kilnRecipe.getResultItem(null));
     }
 
     @Override
     public void draw(KilnRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        flame.draw(guiGraphics, 5, 24);
-        arrow.draw(guiGraphics, 27, 22);
+        flame.draw(guiGraphics, 1, 20);
+        arrow.draw(guiGraphics, 24, 18);
+        var timeString = Component.translatable("gui.jei.category.smelting.time.seconds", recipe.getTime() / 20);
+        var textWidth = Minecraft.getInstance().font.width(timeString);
+        var textHeight = Minecraft.getInstance().font.lineHeight;
+        guiGraphics.drawString(
+                Minecraft.getInstance().font,
+                timeString,
+                UI_WIDTH - textWidth, UI_HEIGHT - textHeight,
+                0xFF808080,
+                false
+        );
     }
 }
