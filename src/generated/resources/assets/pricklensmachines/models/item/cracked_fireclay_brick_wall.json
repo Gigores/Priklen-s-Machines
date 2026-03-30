@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "pricklensmachines:block/cracked_fireclay_bricks"
+  }
+}

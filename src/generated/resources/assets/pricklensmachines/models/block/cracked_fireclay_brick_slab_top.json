@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "pricklensmachines:block/cracked_fireclay_bricks",
+    "side": "pricklensmachines:block/cracked_fireclay_bricks",
+    "top": "pricklensmachines:block/cracked_fireclay_bricks"
+  }
+}
