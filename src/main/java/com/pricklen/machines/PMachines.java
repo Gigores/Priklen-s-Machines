@@ -4,10 +4,12 @@ import com.mojang.logging.LogUtils;
 import com.pricklen.machines.block.ModBlocks;
 import com.pricklen.machines.block.entity.ModBlockEntities;
 import com.pricklen.machines.item.ModItems;
+import com.pricklen.machines.ponder.PMachinesPonderPlugin;
 import com.pricklen.machines.recipe.ModRecipes;
 import com.pricklen.machines.screen.KilnHatchScreen;
 import com.pricklen.machines.screen.KilnScreen;
 import com.pricklen.machines.screen.ModMenuTypes;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.level.block.Blocks;
@@ -106,6 +108,7 @@ public class PMachines {
 //            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
             MenuScreens.register(ModMenuTypes.KILN_MENU.get(), KilnScreen::new);
             MenuScreens.register(ModMenuTypes.KILN_HATCH_MENU.get(), KilnHatchScreen::new);
+            PonderIndex.addPlugin(new PMachinesPonderPlugin());
         }
     }
 }

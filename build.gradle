@@ -124,6 +124,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" }
+    maven { url = "https://maven.createmod.net" }
     maven { url = 'https://maven.parchmentmc.org' }
     maven {
         // location of the maven that hosts JEI files since January 2023
@@ -169,6 +171,10 @@ dependencies {
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
     implementation fg.deobf("maven.modrinth:jade:${jade_version}")
+
+    compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
+    runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
