@@ -1,0 +1,24 @@
+{
+  "creativetab.machines_tab": "Pricklen’s Machines",
+
+  "item.pricklensmachines.fireclay": "Шамот",
+  "item.pricklensmachines.fireclay_brick": "Шамотный кирпич",
+
+  "block.pricklensmachines.fireclay_bricks": "Шамотные кирпичи",
+  "block.pricklensmachines.fireclay_brick_slab": "Плита из шамотного кирпича",
+  "block.pricklensmachines.fireclay_brick_wall": "Стена из шамотного кирпича",
+  "block.pricklensmachines.fireclay_brick_stairs": "Ступени из шамотного кирпича",
+  "block.pricklensmachines.fireclay_block": "Блок шамота",
+  "block.pricklensmachines.kiln_controller": "Контроллер обжиговой печи",
+  "block.pricklensmachines.kiln_hatch": "Люк обжиговой печи",
+
+  "jei.category.kiln": "Обжиговая печь",
+  "config.jade.plugin_pricklensmachines.kiln_cp": "Обжиговая печь",
+
+  "pricklensmachines.ponder.kiln.header": "Обжиговая печь",
+  "pricklensmachines.ponder.kiln.text_1": "Чтобы использовать Контроллер обжиговой печи, постройте необходимую структуру.",
+  "pricklensmachines.ponder.kiln.text_2": "В структуре должно быть как минимум 3 таких слоя.",
+  "pricklensmachines.ponder.kiln.text_3": "Любой структурный блок может быть заменен люком любого режима.",
+  "pricklensmachines.ponder.kiln.text_4": "Вы можете увеличить высоту до 6 слоёв, чтобы ускорить обработку.",
+  "pricklensmachines.ponder.kiln.text_5": "Обратите внимание, что более высокие печи будут потреблять больше топлива."
+}
