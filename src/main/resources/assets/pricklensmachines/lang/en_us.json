@@ -13,5 +13,12 @@
   "block.pricklensmachines.kiln_hatch": "Kiln Hatch",
 
   "jei.category.kiln": "Kiln",
-  "config.jade.plugin_pricklensmachines.kiln_cp": "Kiln"
+  "config.jade.plugin_pricklensmachines.kiln_cp": "Kiln",
+
+  "pricklensmachines.ponder.kiln.header": "Kiln",
+  "pricklensmachines.ponder.kiln.text_1": "To use the Kiln Controller, build a structure around it.",
+  "pricklensmachines.ponder.kiln.text_2": "The structure must have least 3 these layers.",
+  "pricklensmachines.ponder.kiln.text_3": "Any structural block can be replaced with a hatch of any type.",
+  "pricklensmachines.ponder.kiln.text_4": "You can increase the height up to 6 layers to improve processing speed.",
+  "pricklensmachines.ponder.kiln.text_5": "Note that taller structures will consume fuel faster."
 }
