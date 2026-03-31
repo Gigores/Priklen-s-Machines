@@ -20,7 +20,10 @@ import net.minecraft.world.phys.Vec3;
 
 public class ModPonderScenes {
     public static void register(PonderSceneRegistrationHelper<ResourceLocation> helper) {
-        helper.forComponents(ModBlocks.KILN.getId()).addStoryBoard("kiln_controller", ModPonderScenes::kilnController);
+        helper.forComponents(ModBlocks.KILN.getId())
+                .addStoryBoard("kiln_controller", ModPonderScenes::kilnController);
+        helper.forComponents(ModBlocks.KILN_HATCH.getId())
+                .addStoryBoard("kiln_controller", ModPonderScenes::kilnController);
     }
     private static void showLayer(PonderSceneBuilder scene, SceneBuildingUtil util, int y) {
         for (int x = 0; x < 3; x++)
