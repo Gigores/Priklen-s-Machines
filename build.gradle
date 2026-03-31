@@ -17,6 +17,8 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
+jarJar.enable()
+
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
@@ -177,9 +179,18 @@ dependencies {
 
     implementation fg.deobf("maven.modrinth:jade:${jade_version}")
 
-    compileOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
-    runtimeOnly fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
-    implementation(fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}"))
+    implementation fg.deobf("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    jarJar("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:[1.0,2.0)") {
+        version {
+            prefer "${flywheel_version}"
+        }
+    }
+    implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+    jarJar("net.createmod.ponder:Ponder-Forge-${minecraft_version}:[1.0,2.0)") {
+        version {
+            prefer "${ponder_version}"
+        }
+    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -218,4 +229,7 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+tasks.named('jarJar') {
+
 }
