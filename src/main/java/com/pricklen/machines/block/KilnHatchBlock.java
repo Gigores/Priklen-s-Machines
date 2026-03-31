@@ -52,7 +52,7 @@ public class KilnHatchBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState state, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
 
-        if (!level.isClientSide && player.isCrouching()) {
+        if (!level.isClientSide && player.isShiftKeyDown()) {
             HatchMode mode = state.getValue(MODE);
             HatchMode newMode = (mode == HatchMode.INPUT) ? HatchMode.OUTPUT : HatchMode.INPUT;
 
