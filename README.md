@@ -5,7 +5,7 @@
 
 The mod was originally developed for the upcoming "Dieselpunk" modpack, but was later released as a standalone project.
 
-### [KubeJS](https://github.com/KubeJS-Mods/KubeJS) Integration
+### [KubeJS](https://github.com/KubeJS-Mods/KubeJS) Integration (upcoming)
 ```javascript
 ServerEvents.recipes(event => {
     event.recipes.pricklensmachines.kiln_smelting("minecraft:glowstone", ["minecraft:redstone"], 100);
