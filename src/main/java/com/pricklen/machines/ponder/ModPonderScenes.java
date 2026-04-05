@@ -45,8 +45,8 @@ public class ModPonderScenes {
         var levelsRevealed = 0;
 
         var controller = new BlockPos(2, 1, 1);
-        var inputHatch = new BlockPos(3, 3, 1);
-        var outputHatch = new BlockPos(1, 2, 2);
+        var inputHatch = new BlockPos(3, 1, 1);
+        var outputHatch = new BlockPos(1, 2, 1);
 
         scene.world().showSection(util.select().position(controller), Direction.DOWN);
         scene.idle(10);
@@ -97,12 +97,16 @@ public class ModPonderScenes {
         scene.addKeyframe();
 
         scene.world().setBlock(inputHatch, ModBlocks.KILN_HATCH.get().defaultBlockState().setValue(KilnHatchBlock.FACING, Direction.NORTH).setValue(KilnHatchBlock.MODE, HatchMode.INPUT), true);
-        scene.world().setBlock(outputHatch, ModBlocks.KILN_HATCH.get().defaultBlockState().setValue(KilnHatchBlock.FACING, Direction.WEST).setValue(KilnHatchBlock.MODE, HatchMode.OUTPUT), true);
+        scene.world().setBlock(outputHatch, ModBlocks.KILN_HATCH.get().defaultBlockState().setValue(KilnHatchBlock.FACING, Direction.WEST).setValue(KilnHatchBlock.MODE, HatchMode.INPUT), true);
         scene.idle(10);
 
         scene.overlay().showText(100)
                 .text("pricklensmachines.ponder.kiln.text_3");
         scene.idle(100);
+
+        scene.overlay().showControls(new Vec3(outputHatch.getX(), outputHatch.getY(), outputHatch.getZ() + .5f), Pointing.DOWN, 20).whileSneaking().rightClick();
+        scene.world().setBlock(outputHatch, ModBlocks.KILN_HATCH.get().defaultBlockState().setValue(KilnHatchBlock.FACING, Direction.WEST).setValue(KilnHatchBlock.MODE, HatchMode.OUTPUT), false);
+        scene.idle(30);
 
         scene.overlay().showControls(new Vec3(inputHatch.getX() + .5f, inputHatch.getY() + 1, inputHatch.getZ()), Pointing.DOWN, 20).withItem(new ItemStack(Items.RAW_IRON));
         scene.idle(3);
