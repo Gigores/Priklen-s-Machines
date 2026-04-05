@@ -434,7 +434,7 @@ public class KilnControllerBlockEntity extends BlockEntity implements MenuProvid
         var kilnLevel = 0;
 
         var baseStatus = checkStructurePart(pos, BASE_STRUCTURE);
-        if (!baseStatus.isValid()) return new StructureStatus(0, new ArrayList<>(), new ArrayList<>());
+        if (!baseStatus.isValid()) return new StructureStatus(0, baseStatus.inputHatches(), baseStatus.outputHatches());
         inputHatches.addAll(baseStatus.inputHatches());
         outputHatches.addAll(baseStatus.outputHatches());
         var dY = 1;

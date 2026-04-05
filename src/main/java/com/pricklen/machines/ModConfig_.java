@@ -25,8 +25,8 @@ public class ModConfig_ {
 
         kilnLoadFurnace = builder.define("useFurnaceRecipes", true);
         kilnLoadBlastFurnace = builder.define("useBlastFurnaceRecipes", true);
-        kilnMaxLevels = builder.defineInRange("maxLevels", 6, 1, Integer.MAX_VALUE);
-        kilnMinLevels = builder.defineInRange("minLevels", 3, 1, Integer.MAX_VALUE);
+        kilnMaxLevels = builder.defineInRange("maxLayers", 6, 1, Integer.MAX_VALUE);
+        kilnMinLevels = builder.defineInRange("minLayers", 3, 1, Integer.MAX_VALUE);
 
         builder.pop();
     }
