@@ -1,5 +1,6 @@
 package com.pricklen.machines.ponder;
 
+import com.pricklen.machines.ModConfig_;
 import com.pricklen.machines.block.HatchMode;
 import com.pricklen.machines.block.KilnControllerBlock;
 import com.pricklen.machines.block.KilnHatchBlock;
@@ -33,11 +34,15 @@ public class ModPonderScenes {
             }
     }
     private static void kilnController(SceneBuilder builder, SceneBuildingUtil util) {
+        final int TOTAL_LAYERS = 6;
+
         var scene = new PonderSceneBuilder(builder.getScene());
         scene.title("kiln", "Kiln");
         scene.configureBasePlate(0, 0, 5);
         scene.showBasePlate();
         scene.idle(10);
+
+        var levelsRevealed = 0;
 
         var controller = new BlockPos(2, 1, 1);
         var inputHatch = new BlockPos(3, 3, 1);
@@ -66,12 +71,16 @@ public class ModPonderScenes {
         scene.idle(10);
 
         scene.overlay().showOutlineWithText(util.select().cuboid(new BlockPos(1, 2, 1), new Vec3i(2, 0, 2)), 100)
-                .text("pricklensmachines.ponder.kiln.text_2");
+                .text("pricklensmachines.ponder.kiln.text_2", ModConfig_.CONFIG.kilnMinLevels.get());
         scene.idle(100);
 
-        showLayer(scene, util, 3);
-        showLayer(scene, util, 4);
-        scene.idle(5);
+        if (ModConfig_.CONFIG.kilnMinLevels.get() > 1) {
+            for (int i = 1; i < ModConfig_.CONFIG.kilnMinLevels.get() && i < TOTAL_LAYERS - 1; i++) {
+                showLayer(scene, util, 2 + i);
+                levelsRevealed++;
+            }
+            scene.idle(5);
+        }
 
         scene.addKeyframe();
 
@@ -106,10 +115,10 @@ public class ModPonderScenes {
 
         scene.addKeyframe();
 
-        showLayer(scene, util, 5);
-        showLayer(scene, util, 6);
+        for (int i = levelsRevealed + 1; i < ModConfig_.CONFIG.kilnMaxLevels.get() && i < TOTAL_LAYERS; i++)
+            showLayer(scene, util, 2 + i);
         scene.overlay().showText(100)
-                .text("pricklensmachines.ponder.kiln.text_4");
+                .text("pricklensmachines.ponder.kiln.text_4", ModConfig_.CONFIG.kilnMaxLevels.get());
         scene.idle(100);
 
         scene.overlay().showControls(new Vec3(inputHatch.getX() + .5f, inputHatch.getY() + 1, inputHatch.getZ()), Pointing.DOWN, 20).withItem(new ItemStack(Items.RAW_IRON));
