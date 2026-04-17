@@ -122,3 +122,6 @@ src/generated/resources/.cache
 run-data/logs
 
 changelog/
+bin/
+run-data/
+.settings/
